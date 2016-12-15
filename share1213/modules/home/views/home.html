@@ -1,0 +1,347 @@
+<div class="container-fluid"">
+    <div class="fixed-nav-bar">        
+        <div class="row" style="padding:10px; background-color: white" >
+            <div id="logo" class="col-xs-4" style="text-align: center;"><a href="http://api.theshareapp.co"><img src="icons/logo.jpg"></a></div>
+            <div class="col-xs-4" ng-controller="searchCtrl">
+                <table style="width: 100%">
+                    <tr>
+                        <td style="padding-top: 4px;">
+                           <angucomplete id="ex1" placeholder="Search events" pause="100" selectedobject="selectedCountry" localdata="eventsName" searchfields="name" titlefield="name" minlength="1" inputclass="form-control form-control-small" matchclass="highlight">
+                            </angucomplete>
+                        </td>
+
+                        <td style="position:relative;right:38px;">
+                            <form ng-submit="submit()"> 
+                                <input type="hidden" ng-model="text" name="text" />
+                                <button type="submit" class="btn btn-default" id="submit" value="Submit" style="border-left: 0px; border-left: none;border-top: none;border-bottom: none;"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xs-4" style="text-align: center">
+                <div class="dropdown">
+                    <button class="dropdown-toggle" type="button" id="menu1" data-toggle="dropdown" style="border-style:none; background-color:transparent">
+                        <span class="glyphicon glyphicon-cog" 
+                              style="font-size:35px; padding-top:5px; color: white; -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: #b5bdc9;">
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="text-align: left;">
+                      <li role="presentation"><a role="menuitem" tabindex="-1" ><span class="fa fa-user"></span>&nbsp;{{name}}</a></li>
+                      <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="logout()"><span class="fa fa-sign-out"></span>&nbsp;log out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+<!--    four-color-stripes    -->
+        <div class="row">
+            <!-- <div style="position: relative; border-style: solid"> -->
+                <table style="width: 100%; height: 5px;">
+                    <tr>
+                        <td style="width: 25%; background-color: #00add6;"></td>
+                        <td style="width: 25%; background-color: #e93a18;"></td>
+                        <td style="width: 25%; background-color: #35e000;"></td>
+                        <td style="width: 25%; background-color: #fadb2d;"></td>
+                    </tr>
+                </table>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>  <!-- End of container-fluid -->
+
+<!-- Show user sessionid -->
+<!-- <div class="container" style="margin-top:110px;">
+    <h1>Home</h1>
+    <p><b>Hello, {{id}}</b></p>
+</div> -->
+
+<div style="position: relative; margin-top: 5px;" ng-controller="appCtrl">
+    <!-- Event&Pictures test pills -->
+    <div ng-hide="true" style="position: relative; top: 100px; text-align:center;">
+        <button id="getEvents" type="button" ng-click="getEvents()" class="btn btn-default">Get Events List</button>
+        <button id="myEvents" type="button" ng-click="getMyEvents()" class="btn btn-default">Get My Events</button>
+        <button id="myPictures" type="button" ng-click="getMyPictures()" class="btn btn-default">Get My Pictures</button>
+    </div>
+</div>
+
+<!-- div for homepage -->
+<div class="container" ng-show="page=='home'" style="position:relative; top: 130px;">
+        
+    <div id="pills">
+        <ul class="nav nav-pills">
+            <li><a id="picture_tab" data-toggle="pill" data-target="#pictures" class="mppill"><span class="pilltext">My Pictures</span></a></li>
+            <li><a id="event_tab" data-toggle="pill" data-target="#events" class="mepill"><span class="pilltext">My Events</span></a></li>
+        </ul>
+    </div>
+
+    <div id="tab_div" class="tab-content">
+            <!-- events -->
+            <div id="events" class="tab-pane fade in active">
+                <div ng-controller="eventCtrl" class="ng-cloak">
+                    <button id="newPubEvent" type="button" ng-click="newEvent()" class="btn btn-default">New Event</button>
+                    <br>
+                    <br>
+
+                    <div class="piccenter">
+
+                    <div ng-repeat="event in events" class="event_div">                     
+<!--
+                        <div class="event_cover_wrapper" style="width:300px;height:300px;overflow:hidden">
+                            <img ng-src={{event.cover_picture}} alt={{event.event_name}} ng-click="getEventPictures(event)">
+                        </div>                        
+-->
+                        <div class="event_cover_wrapper">
+                            <img ng-show="event.has_access" ng-src={{event.cover_picture}} alt="the Event is empty..." class="event_cover_pic" ng-click="getEventPictures(event)">
+                            <img ng-show="!event.has_access" ng-src="lock.png" class="event_cover_pic" ng-click="getEventPictures(event)">
+                        </div>
+                        <div class="event_description">
+                            <span>{{event.event_name}}</span>
+                            <br>
+                            <span>{{event.is_public | publicOrPrivate}}</span> |
+                            <span>{{event.pic_count | photoOrPhotos}}</span> |
+                            <span>{{event.expire_date | daysBeforeExpired}} left</span>
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="confirmDeleteEvent(event.event_id)"></span>
+                        </div>
+                        <div id=event_{{event.event_id}} class="password" ng-show = "!event.has_access">
+                            Password: <input id=event_{{event.event_id}}_pwd ng-model = "privatePwd">
+                            <button type="button" ng-click="accessPrivate(event)" class="btn btn-default">OK</button>
+                        </div> 
+                    </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <!-- pictures -->
+            <div id="pictures" class="tab-pane fade">
+                <div ng-controller="pictureCtrl" style="padding: auto;">
+
+                <div class="piccenter">
+
+                    <div class="picture_div" ng-repeat="pic in pictures">
+                        <div class="event_cover_wrapper">
+                            <img ng-src={{pic.pic_thumb_url}} id=pic0_{{pic.pic_id}} class="event_cover_pic" ng-click="picDetails(pic)">
+                            <!-- overflow information -->
+                            <div class="infoOverflow"  ng-click="picDetails(pic)">
+                                <span ng-if="pic.caption!=null">{{pic.caption}}</span>
+                                <span ng-if="pic.caption==''">No Caption...</span>      
+                                <br>
+                                <span ng-show="!pic.has_liked" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ng-click="like(pic)"></span>
+                                <span ng-show="pic.has_liked" class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="like(pic)"></span>
+                                <span>{{pic.like_count}}</span>
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                                <span>{{pic.num_comments}}</span>   
+                            </div>
+                        </div>
+                        <div class="picture_description">
+                            <div class="first_line">
+                                <span>{{pic.creation_date | hoursSinceCreated}}</span>
+                                <span>{{pic.username}}</span>
+                                <span>{{pic.expire_date | daysBeforeExpired}} left</span>
+                                <span ng-show="pic.type!='event'" class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>{{pic.location_name}}</span>
+                            </div>
+                            <div class="second_line">
+                                <span ng-if="pic.caption!=null">{{pic.caption}}</span>
+                                <span ng-if="pic.caption==''">No Caption...</span>
+                            </div>
+                            <div class="third_line">
+                                
+                                <span ng-show="!pic.has_liked" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ng-click="like(pic)"></span>
+                                <span ng-show="pic.has_liked" class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="like(pic)"></span>
+                                
+                                <span>{{pic.like_count}}</span>
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                                <span>{{pic.num_comments}}</span>
+                                <span class="glyphicon glyphicon-download" aria-hidden="true"  ng-click="singleDownload(pic.pic_id)"></span>
+                                <span class="glyphicon glyphicon-repeat" aria-hidden="true" ng-click="rotate(pic.pic_id, 90)"></span>
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="confirmDeletePic(pic.pic_id)"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+
+                </div>
+            </div>
+    </div> <!-- End of tab events -->
+</div>  <!-- End of page==home -->
+
+<!--div for event pictures-->
+<div class="container" ng-show="page=='eventPic'" style="position:relative; top: 100px; min-height: 50%">
+    <div class="top">
+       <button id="back" type="button" ng-click="back()"><span id="leftArrow" class="glyphicon glyphicon-arrow-left"></span> Back</button> 
+    </div>
+    <h1 class="center">#{{curEvent.event_name}}</h1>
+    <div ng-controller="pictureCtrl">
+    <button id="multidownload" type="button" class="btn btn-default pull-right" ng-click="multidownload()">Multi-Download</button>
+    <!-- <button>
+    
+    </button> -->
+    <button id="selectAll" type="button" ng-show="downloadShow" ng-click="selectAll()">
+    <span class="glyphicon glyphicon-th-large"></span><span id="select">Select All</span>
+    </button>
+    <button id="download" type="button" ng-show="downloadShow" ng-click="download()">
+    <span class="glyphicon glyphicon-download-alt"></span>Download
+    </button>
+
+    <div id="upload" ng-controller="UploadCtrl">
+<!--        <h4>Upload on file select</h4>-->
+        <button id="fileUpload" class="btn btn-default" ngf-select="uploadFiles($files)" multiple accept="image/*">Upload Photos</button>
+<!--
+        <br>
+        <br>Files:
+        <ul>
+            <li ng-repeat="f in files" style="font:smaller">
+                {{f.name}}
+            </li>
+        </ul>
+        <span class="progress" ng-show="progress >= 0">
+            <div style="width:{{progress}}%" ng-bind="progress + '%'"></div>
+        </span>
+-->
+        {{errorMsg}}
+    </div>
+
+
+    <p>&nbsp</p>
+
+    <div class="piccenter">
+
+        <div class="picture_div" ng-repeat="pic in pictures">
+
+            <input class="checkboxes" ng-show="checkboxShow" ng-click="isDownload(pic.pic_id)" type="checkbox" name="isDownload" >
+            <div class="event_multidownload" id="{{pic.pic_id}}">
+                <img ng-src={{pic.pic_thumb_url}} id=pic1_{{pic.pic_id}} class="event_cover_pic" ng-click="picDetails(pic)">
+                <div class="infoOverflow"  ng-click="picDetails(pic)">
+                    <span ng-if="pic.caption!=null">{{pic.caption}}</span>
+                    <span ng-if="pic.caption==''">No Caption...</span>      
+                    <br>
+                    <span ng-show="!pic.has_liked" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ng-click="like(pic)"></span>
+                    <span ng-show="pic.has_liked" class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="like(pic)"></span>
+                    <span>{{pic.like_count}}</span>
+                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                    <span>{{pic.num_comments}}</span>   
+                </div>
+            </div>
+            <div class="picture_description">
+                <div class="first_line">
+                    <span>{{pic.username}}</span>
+                    <span>{{pic.expire_date | daysBeforeExpired}} left</span>
+                </div>
+                <div class="second_line">
+                    <span ng-if="pic.caption!=null">{{pic.caption}}</span>
+                    <span ng-if="pic.caption==''">No Caption...</span>
+                </div>
+                <div class="third_line">
+
+                    <span ng-show="!pic.has_liked" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ng-click="like(pic)"></span>
+                    <span ng-show="pic.has_liked" class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="like(pic)"></span>
+                    
+                    <span>{{pic.like_count}}</span>
+                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                    <span>{{pic.num_comments}}</span>
+                    <span class="glyphicon glyphicon-download" aria-hidden="true" ng-click="singleDownload(pic.pic_id)"></span>
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true" ng-click="rotate(pic.pic_id, 90)"></span>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="confirmDeletePic(pic.pic_id)"></span>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+        <div id="multidownloadArea"></div>
+
+    </div>
+</div>
+
+<!--div for picture details-->
+<div class="container" ng-show="page=='details'" style="position:relative; top: 100px;">
+    <button id="back" type="button" ng-click="back()" class="btn btn-default">Back</button>
+    <div ng-controller="pictureCtrl">
+        <div class="picture_div">
+            <div class="picture_wrapper">
+                <img ng-src={{pic.pic_url}} id=pic2_{{pic.pic_id}}>
+            </div>
+            <div class="picture_description">
+                <div class="first_line">
+                    <span>{{pic.username}}</span>
+                    <span>{{pic.expire_date | daysBeforeExpired}} left</span>
+                    <span ng-show="pic.type!='event'" class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><span>{{pic.location_name}}</span>
+                </div>
+                <div class="second_line">
+                    <span>{{pic.caption}}</span>
+                </div>
+                <div class="third_line">
+                    <span ng-show="!pic.has_liked" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ng-click="like(pic)"></span>
+                    <span ng-show="pic.has_liked" class="glyphicon glyphicon-heart" aria-hidden="true" ng-click="like(pic)"></span>
+                    <span>{{pic.like_count}}</span>
+                    <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                    <span>{{pic.num_comments}}</span>
+                    <span class="glyphicon glyphicon-download" aria-hidden="true" ng-click="singleDownload(pic.pic_id)"></span>
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true" ng-click="rotate(pic.pic_id, 90)"></span>
+                </div>
+                
+                <div class="comments_area">
+                    <div class="comments" ng-repeat="comment in comments">
+                        <span>{{comment.username}}: {{comment.comment_text}}</span>
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true" ng-click="confirmDeleteCmt(comment.comment_id)"></span>
+                    </div>
+                </div>
+                <div>
+                <!-- TODO: vaildate-->
+                    Type your comment: <input ng-model="myComment">
+                    <button id="submitComment" type="button" ng-click="submitComment()" class="btn btn-default">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--div for creating event-->
+<div class="container" ng-show="page=='createEvent'" style="position:relative; top: 100px; min-height: 50%">
+    <div ng-controller="eventCtrl" class="ng-cloak">
+        <button id="back" type="button" ng-click="back()" class="btn btn-default">Back</button>
+        <div>
+           <!--  New Event Name: <input ng-model="eventName"><br><br>
+            <p ng-show="isPrivate">Set Password: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input ng-model="password"></p><br><br> -->
+            
+            <form>
+                <div class="form-group row">
+                    <label for="eventName" class="col-xs-2 col-form-label">New Event Name:</label>
+                    <div class="col-xs-6">
+                        <input class="form-control" ng-model="eventName" id="eventName">
+                    </div>
+                </div>
+                <div class="form-group row" ng-show="isPrivate">
+                    <label for="password" class="col-xs-2 col-form-label">Set Password:</label>
+                    <div class="col-xs-6"><input class="form-control" ng-model="password" id="password"></div>
+                </div>
+            </form>
+            
+            <label class="radio-inline"> 
+                <input type="radio" ng-model="isPrivate" ng-value="false">
+                <label>Public</label>
+            </label>
+            <label class="radio-inline">
+                <input type="radio" ng-model="isPrivate" ng-value="true">
+                <label>Private</label>
+            </label>
+            
+            <br><br><br>
+            <button ng-show="!isPrivate" type="button" ng-click="createPublic()" class="btn btn-default">Create Public Event</button>
+            <button ng-show="isPrivate" type="button" ng-click="createPrivate()" class="btn btn-primary">Create Private Event</button>
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+<!-- div for footer -->
+<div id="footer" class="footer">
+    <img class="share" src="icons/share1.png"></img>
+    <div id="Download-the-App" class="flink"><a style="text-decoration: none; color: white" href="https://api.theshareapp.co">Download the App </a></div>
+    <div id="Terms-of-Use" class="flink">Terms of Use</div>
+    <div id="Privacy-Policy" class="flink">Privacy Policy</div>
+    <div class="Share-App-Al">© 2016 Share App. All rights reserved</div>
+    <div class="Line"></div>
+</div>
+
+<!-- <script>document.getElementById("footer").style.bottom=-document.body.clientHeight;</script> -->
