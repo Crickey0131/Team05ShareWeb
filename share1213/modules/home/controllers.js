@@ -940,7 +940,14 @@ angular.module('Home',["ngTouch", "angucomplete", "ngFileUpload"])
 //            eventService.setEvents(events); // 1 save events to eventService
 //            $rootScope.$broadcast(EVENT_LIST_UPDATED_EVENT, events); // 2 broadcast: New Events!
             //console.log("$rootScope.event4local[0].event_id is " + $rootScope.event4local[0].event_name);
-            $rootScope.getEventPictures(events[0]);
+            if (events[0].has_access) {
+                $rootScope.getEventPictures(events[0]);
+            } else {
+                var pwd123 = prompt("Please enter the password");
+                if (pwd123 != null) {
+                    $rootScope.accessPrivate(events[0], pwd123);
+                }
+            }
         };
         function errorCallback(res){
             console.log("get events fail");

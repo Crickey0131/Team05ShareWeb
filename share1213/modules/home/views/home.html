@@ -1,4 +1,4 @@
-<div class="container-fluid"">
+<div class="container-fluid">
     <div class="fixed-nav-bar">        
         <div class="row" style="padding:10px; background-color: white" >
             <div id="logo" class="col-xs-4" style="text-align: center;"><a href="http://api.theshareapp.co"><img src="icons/logo.jpg"></a></div>
@@ -85,15 +85,12 @@
                     <div class="piccenter">
 
                     <div ng-repeat="event in events" class="event_div">                     
-<!--
-                        <div class="event_cover_wrapper" style="width:300px;height:300px;overflow:hidden">
-                            <img ng-src={{event.cover_picture}} alt={{event.event_name}} ng-click="getEventPictures(event)">
-                        </div>                        
--->
-                        <div class="event_cover_wrapper">
-                            <img ng-show="event.has_access" ng-src={{event.cover_picture}} alt="the Event is empty..." class="event_cover_pic" ng-click="getEventPictures(event)">
-                            <img ng-show="!event.has_access" ng-src="lock.png" class="event_cover_pic" ng-click="getEventPictures(event)">
+                        
+                        <div class="event_cover_wrapper event_cover_pic" ng-click="getEventPictures(event)">
+                            <img ng-show="event.has_access" ng-src={{event.cover_picture}} alt="the Event is empty..." class="center-cropped">
+                            <img ng-show="!event.has_access" ng-src="lock.png" class="center-cropped">
                         </div>
+                                                                              
                         <div class="event_description">
                             <span>{{event.event_name}}</span>
                             <br>
@@ -119,8 +116,8 @@
                 <div class="piccenter">
 
                     <div class="picture_div" ng-repeat="pic in pictures">
-                        <div class="event_cover_wrapper">
-                            <img ng-src={{pic.pic_thumb_url}} id=pic0_{{pic.pic_id}} class="event_cover_pic" ng-click="picDetails(pic)">
+                        <div class="event_cover_wrapper event_cover_pic">
+                            <img ng-src={{pic.pic_thumb_url}} id=pic0_{{pic.pic_id}} class="center-cropped" ng-click="picDetails(pic)">
                             <!-- overflow information -->
                             <div class="infoOverflow"  ng-click="picDetails(pic)">
                                 <span ng-if="pic.caption!=null">{{pic.caption}}</span>
@@ -210,8 +207,8 @@
         <div class="picture_div" ng-repeat="pic in pictures">
 
             <input class="checkboxes" ng-show="checkboxShow" ng-click="isDownload(pic.pic_id)" type="checkbox" name="isDownload" >
-            <div class="event_multidownload" id="{{pic.pic_id}}">
-                <img ng-src={{pic.pic_thumb_url}} id=pic1_{{pic.pic_id}} class="event_cover_pic" ng-click="picDetails(pic)">
+            <div class="event_multidownload event_cover_pic" id="{{pic.pic_id}}">
+                <img ng-src={{pic.pic_thumb_url}} id=pic1_{{pic.pic_id}} class="center-cropped" ng-click="picDetails(pic)">
                 <div class="infoOverflow"  ng-click="picDetails(pic)">
                     <span ng-if="pic.caption!=null">{{pic.caption}}</span>
                     <span ng-if="pic.caption==''">No Caption...</span>      
